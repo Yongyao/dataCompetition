@@ -6,7 +6,7 @@ Created on Wed May  3 21:44:05 2017
 @author: yjiang
 """
 
-import numpy
+import numpy as np
 import pandas
 from keras.models import Sequential
 from keras.layers import Dense
@@ -49,16 +49,29 @@ def baseline_model():
     model.add(Dense(6, kernel_initializer='normal', activation='relu'))
     model.add(Dense(1, kernel_initializer='normal'))
 	# Compile model
-    model.compile(loss='mean_squared_error', optimizer='adam')
+    model.compile(loss='mean_absolute_error', optimizer='adam')
     return model
 
 # fix random seed for reproducibility
 seed = 7
-numpy.random.seed(seed)
+np.random.seed(seed)
 # evaluate model with standardized dataset
 estimator = KerasRegressor(build_fn=baseline_model, nb_epoch=50, batch_size=50, verbose=0)
+
 estimator.fit(X, Y)
 prediction = estimator.predict(test_X)
+pandas.concat([pandas.DataFrame(test_dataset[:,0:3]),pandas.DataFrame(prediction.astype(int))], 
+               axis=1).to_csv('data/test_result.csv', index=False, 
+               header=['city', 'year', 'weekofyear', 'total_cases'])
+#==============================================================================
+# output = np.column_stack((test_dataset[:,0:4], prediction))
+# np.savetxt("data/test_result.csv", output, delimiter=",")
+#==============================================================================
+
+#==============================================================================
+# from sklearn.metrics import mean_absolute_error
+# score = mean_absolute_error(Y_test, clf.predict(X_test))
+#==============================================================================
 #==============================================================================
 # kfold = KFold(n_splits=4, random_state=seed)
 # results = cross_val_score(estimator, X, Y, cv=kfold)
