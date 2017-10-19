@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed May  3 21:44:05 2017
-
+Description: use keras regression as a baseline function for dengAI
 @author: yjiang
 """
 
